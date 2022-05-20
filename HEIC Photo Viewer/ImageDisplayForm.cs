@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Printing;
 
 namespace HEIC_Photo_Viewer
 {
@@ -134,6 +135,7 @@ namespace HEIC_Photo_Viewer
         {
             if (Environment.GetCommandLineArgs().Length > 1) { OpenImageFromPath(Environment.GetCommandLineArgs()[1]); }
             FormatUI();
+            printToolStripMenuItem.Visible = false;
         }
 
 
@@ -178,6 +180,66 @@ namespace HEIC_Photo_Viewer
         {
             if (e.Delta > 0) { zoomToolStripMenuItem_Click(zoomInToolStripMenuItem, e); }
             else if (e.Delta < 0) { zoomToolStripMenuItem_Click(zoomOutToolStripMenuItem, e); }
+        }
+
+        private void printToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PrintImage();
+        }
+        private void PrintImage()
+        {
+            PrintPreviewDialog printPreviewDialog1 = new PrintPreviewDialog();
+            printPreviewDialog1.Document = CreatePrintDocument(true);
+
+            ToolStripButton OrientationButton = new ToolStripButton();
+            OrientationButton.Text = "LandScape";
+            OrientationButton.Checked = printPreviewDialog1.Document.DefaultPageSettings.Landscape;
+            OrientationButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            OrientationButton.Click += delegate 
+            { 
+                printPreviewDialog1.Document = CreatePrintDocument(!printPreviewDialog1.Document.DefaultPageSettings.Landscape);
+                OrientationButton.Checked = printPreviewDialog1.Document.DefaultPageSettings.Landscape;
+            };
+
+            ToolStripButton PrintButton = new ToolStripButton();
+            PrintButton.Text = "Print";
+            PrintButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            PrintButton.Click += delegate 
+            { 
+                PrintDialog(printPreviewDialog1.Document);
+                printPreviewDialog1.Close();
+            };
+
+            ((ToolStrip)(printPreviewDialog1.Controls[1])).Items.RemoveAt(0);
+            ((ToolStrip)(printPreviewDialog1.Controls[1])).Items.Insert(0, OrientationButton);
+            ((ToolStrip)(printPreviewDialog1.Controls[1])).Items.Insert(0, PrintButton);
+            printPreviewDialog1.ShowDialog();
+
+        }
+
+        private void PrintDialog(PrintDocument PD)
+        {
+            PrintDialog PrintDialog1 = new PrintDialog();
+            PrintDialog1.Document = PD;
+            var result = PrintDialog1.ShowDialog();
+            if (result != DialogResult.OK) { return; }
+            PrintDialog1.Document.Print();
+        }
+
+        private PrintDocument CreatePrintDocument(bool Landscape)
+        {
+            PrintDocument pd = new PrintDocument();
+            pd.DefaultPageSettings.Landscape = Landscape;
+            pd.DefaultPageSettings.Margins = new Margins(20, 20, 20, 20);
+            pd.PrintPage += PrintPage;
+            return pd;  
+        }
+
+        private void PrintPage(object o, PrintPageEventArgs e)
+        {
+            Image i = resizeImage(CurrentImage, new Size(e.MarginBounds.Width, e.MarginBounds.Height));
+
+            e.Graphics.DrawImage(i, e.MarginBounds);
         }
     }
 

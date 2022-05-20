@@ -37,8 +37,9 @@ namespace HEIC_Photo_Viewer
             this.saveAsJPGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel1 = new WheelessPanel();
+            this.panel1 = new HEIC_Photo_Viewer.WheelessPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -52,6 +53,7 @@ namespace HEIC_Photo_Viewer
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.printToolStripMenuItem,
             this.zoomOutToolStripMenuItem,
             this.zoomInToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -105,7 +107,6 @@ namespace HEIC_Photo_Viewer
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 422);
             this.panel1.TabIndex = 2;
-            this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.ImageDisplayForm_MouseWheel);
             // 
             // pictureBox1
             // 
@@ -116,6 +117,14 @@ namespace HEIC_Photo_Viewer
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Image_MouseMove);
+            this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.ImageDisplayForm_MouseWheel);
+            // 
+            // printToolStripMenuItem
+            // 
+            this.printToolStripMenuItem.Name = "printToolStripMenuItem";
+            this.printToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.printToolStripMenuItem.Text = "Print";
+            this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
             // ImageDisplayForm
             // 
@@ -152,5 +161,6 @@ namespace HEIC_Photo_Viewer
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolStripMenuItem zoomOutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomInToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
     }
 }
