@@ -173,5 +173,20 @@ namespace HEIC_Photo_Viewer
             }
             _OldMousePos = MouseLocation;
         }
+
+        private void ImageDisplayForm_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            if (e.Delta > 0) { zoomToolStripMenuItem_Click(zoomInToolStripMenuItem, e); }
+            else if (e.Delta < 0) { zoomToolStripMenuItem_Click(zoomOutToolStripMenuItem, e); }
+        }
     }
+
+    public class WheelessPanel : Panel
+    {
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            //Custom Panel Plass with Mouse wheel scrolling disabled
+        }
+    }
+
 }

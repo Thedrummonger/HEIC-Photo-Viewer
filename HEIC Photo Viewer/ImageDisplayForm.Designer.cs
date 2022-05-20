@@ -37,7 +37,7 @@ namespace HEIC_Photo_Viewer
             this.saveAsJPGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zoomInToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1 = new WheelessPanel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -105,6 +105,7 @@ namespace HEIC_Photo_Viewer
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 422);
             this.panel1.TabIndex = 2;
+            this.pictureBox1.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.ImageDisplayForm_MouseWheel);
             // 
             // pictureBox1
             // 
@@ -147,7 +148,7 @@ namespace HEIC_Photo_Viewer
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsJPGToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
+        private WheelessPanel panel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolStripMenuItem zoomOutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomInToolStripMenuItem;
