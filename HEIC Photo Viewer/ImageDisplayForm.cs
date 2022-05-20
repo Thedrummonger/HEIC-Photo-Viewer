@@ -52,28 +52,30 @@ namespace HEIC_Photo_Viewer
         private void OpenImageFromPath(string path)
         {
             Image ConvertedImage = ConvertHEICtoImage(path);
-            if (ConvertedImage is null) { return; }
-            pictureBox1.Image = ConvertedImage;
+            if (ConvertedImage is null)
+            {
+                MessageBox.Show($"{path}\nwas not a valid image!", "Failed to Open File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; 
+            }
             CurrentImage = ConvertedImage;
+            DisplayResizedImage();
             ImageName = Path.GetFileNameWithoutExtension(path);
 
-            this.Text = $"HEIC Image View: {ImageName}";
+            this.Text = $"HEIC Image View: {Path.GetFileName(path)}";
 
-            SizeObjects();
-            zoomInToolStripMenuItem.Visible = true;
-            zoomOutToolStripMenuItem.Visible = true;
+            FormatUI();
         }
 
         private void saveAsJPGToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (CurrentImage is null) { return; }
-            SaveFileDialog openFileDialog = new SaveFileDialog();
-            openFileDialog.FileName = $"{ImageName}";
-            openFileDialog.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
-            openFileDialog.Title = "Saving Image";
-            var result = openFileDialog.ShowDialog();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = $"{ImageName}";
+            saveFileDialog.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
+            saveFileDialog.Title = "Saving Image";
+            var result = saveFileDialog.ShowDialog();
             if (result != DialogResult.OK) { return; }
-            saveImage(openFileDialog.FileName);
+            saveImage(saveFileDialog.FileName);
         }
 
         public void saveImage(string fileName)
@@ -108,11 +110,14 @@ namespace HEIC_Photo_Viewer
 
         private void ImageDisplayForm_ResizeEnd(object sender, EventArgs e)
         {
-            SizeObjects();
+            FormatUI();
         }
 
-        private void SizeObjects()
+        private void FormatUI()
         {
+            zoomInToolStripMenuItem.Visible = pictureBox1.Image is not null;
+            zoomOutToolStripMenuItem.Visible = pictureBox1.Image is not null;
+            saveAsJPGToolStripMenuItem.Visible = CurrentImage is not null;
             if (pictureBox1.Image is null) { return; }
             var currentScroll = panel1.AutoScrollPosition;
             panel1.AutoScrollPosition = new Point(0, 0);
@@ -127,15 +132,10 @@ namespace HEIC_Photo_Viewer
 
         private void ImageDisplayForm_Load(object sender, EventArgs e)
         {
-            zoomInToolStripMenuItem.Visible = false;
-            zoomOutToolStripMenuItem.Visible = false;
             if (Environment.GetCommandLineArgs().Length > 1) { OpenImageFromPath(Environment.GetCommandLineArgs()[1]); }
+            FormatUI();
         }
 
-        private void fileToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            saveAsJPGToolStripMenuItem.Visible = CurrentImage != null;
-        }
 
         private void zoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -145,7 +145,7 @@ namespace HEIC_Photo_Viewer
             zoomLevel = (sender == zoomOutToolStripMenuItem) ? zoomLevel - modifier : zoomLevel + modifier;
             if (zoomLevel < 10) { zoomLevel = 10; }
             DisplayResizedImage();
-            SizeObjects();
+            FormatUI();
         }
 
         private void DisplayResizedImage()
@@ -160,9 +160,8 @@ namespace HEIC_Photo_Viewer
             return (Image)(new Bitmap(imgToResize, size));
         }
 
-        private void panel1_MouseMove(object sender, MouseEventArgs e)
+        private void Image_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_OldMousePos == e.Location) { return; }
             Point MouseLocation = Cursor.Position;
             if (e.Button == MouseButtons.Left)
             {
